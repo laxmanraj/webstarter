@@ -1,0 +1,121 @@
+<!--
+	<pae-context-browser> calling px-context-browser and context-search
+    initialAssetContext: holds the enterprise level data
+	showBrowser: boolean value passed from the header-default.html
+	assetBrowserOpen: flag value for the collapse and expand
+-->
+
+<dom-module id="pae-context-browser">
+	<template>
+		<style>
+			:host {
+				--px-cb-header-background-color: #ebeff2;
+			}
+		</style>
+		<!-- px-context-browser component -->
+		<asset-context-browser-dialog  btn-modal-positive="{{ 'OPEN'| translate }}"
+				btn-modal-negative="{{ '_CANCEL'| translate }}"
+				id="asset-browser"
+				modal-heading="{{ 'ASSET_CONTEXT'| translate: { objName: context.name} }}"
+				trigger-btn-text="{{context.name || '_CONTEXT_SELECT' | translate}}">
+		</asset-context-browser-dialog>
+
+		<asset-context-browser-dialog btn-modal-positive="{{ '_ADD'| translate }}"
+				btn-modal-negative="{{ '_CANCEL'| translate }}"
+				id="asset-browser-compare"
+				enableMultiSelect=true
+				modal-heading="{{ 'ASSET_CONTEXT'| translate: { objName: context.name} }}"
+				trigger-btn-text="">
+		</asset-context-browser-dialog>
+	</template>
+</dom-module>
+
+<script>
+	Polymer({
+		is: 'pae-context-browser',
+		properties: {
+			/**
+			 * Contains the initialAssetContext enterprise data
+			 * @type {Object}
+			 * @default ''
+			 */
+			initialAssetContext: {
+				type: Object,
+				value: {}
+			},
+			/**
+			 * Contains the showBrowser enterprise data
+			 * @type {Boolean}
+			 */
+			showBrowser: {
+				type: Boolean
+			},
+			/**
+			 * Contains the assetBrowserOpen enterprise data
+			 * @type {Boolean}
+			 */
+			assetBrowserOpen: {
+				type: Boolean,
+				value: false
+			}
+		},
+		// behaviors
+		
+		listeners: {
+			'cb-show': 'showContextBrowser',
+			'cb-collapse': 'hideContextBrowser',
+			'cb-toggle': 'toggleContextBrowser',
+			'open-asset': 'openAsset'
+		},
+		ready: function () {
+//			this.set('_CONTEXT_OPENED_ITEM_NAME', this.getString('context_select'));
+			// Context browser loaded and rendered, Now load the main bundle
+			var self = this;
+			Polymer.RenderStatus.afterNextRender(this.$.contextSearchTemplate, function() {
+				self.fire('load.mainbundle', {});
+				// initialize asset context for pae context browser
+				self.initAssetContext();
+			});
+		},
+
+		initAssetContext: function() {
+			var self = this;
+			var delayTime = 1000;
+			if (location.hash.indexOf('#/views/default') === -1) {
+				delayTime *= 10;
+			}
+
+			window.setTimeout(function() {
+				self.fire('init.assetcontext', { spinner: false });
+			}, delayTime);
+
+		},
+		toggleContextBrowser: function (e) {
+			if (e.detail) {
+				this.showContextBrowser();
+			} else {
+				this.hideContextBrowser();
+			}
+		},
+		_getAssetBrowser: function () {
+			return this.shadowRoot ?
+				this.shadowRoot.querySelector('#asset-browser') : this.querySelector('#asset-browser');
+		},
+		showContextBrowser: function () {
+			var assetBrowser = this._getAssetBrowser();
+			assetBrowser.openedItemName = '';
+			assetBrowser.showAssetContextDialog = true;
+		},
+		hideContextBrowser: function () {
+			var assetBrowser = this._getAssetBrowser();
+			assetBrowser.openedItemName = this.getString('context_select');
+			assetBrowser.showAssetContextDialog = false;
+		},
+		openAsset: function (evt) {
+			var assetBrowser = this._getAssetBrowser();
+			if (assetBrowser) {
+				assetBrowser.handlers.itemOpenHandler(evt.detail);
+			}
+		}
+	});
+</script>
