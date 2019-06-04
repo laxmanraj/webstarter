@@ -7,21 +7,23 @@
     <style></style>
 	<div>
 	
-		<!-- <iron-ajax
+		 <iron-ajax
 			 auto 
 			 url="/downloads/C001.json",
 			 handleAs="json"
 			 last-response="{{resp}}">
-		</iron-ajax>	   -->
-        <textarea rows="10" cols="100" value="{{jsonResp}}">
+		</iron-ajax>	
+        <textarea rows="30" cols="100" value="{{jsonResp}}">
 		</textarea>
-
+		<textarea rows="30" cols="100" value="{{jsonResp2}}">
+		</textarea>
 	<!-- <paper-button raised class = "green" onclick="exportDataFeature(this)">Save</paper-button>
 	<button id="exportBtn" class="btn btn--primary csv-export-btn" hidden> -->
     <paper-button on-tap="_readJsonButton" >Read</paper-button>
 	<paper-button on-tap="_exportSaveButton" >Save</paper-button>
 	</div>
 	<iron-ajax id="jsonRespAjax1"></iron-ajax>
+	<iron-ajax id="jsonRespAjax2"></iron-ajax>
 	</template>
   
   <script>
@@ -30,6 +32,9 @@
       properties: {
 		jsonResp: { 
 			type: Object 
+		},
+		resp:{
+			type:Object
 		}
 	  },
 	  
@@ -41,6 +46,7 @@
 	_exportSaveButton: function() {
 		//window.open('/downloads/C001.csv', '_self');
 		console.log(this.jsonResp);
+		this.jsonResp = JSON.parse(this.jsonResp);
 		//var csvContent = "data:text/csv;charset=utf-8,";
 		var trendData = this.jsonResp.result.trendData;
 		console.log(trendData);
@@ -102,30 +108,47 @@
 		this.$.jsonRespAjax1.url = "/downloads/C001.json";
         this.$.jsonRespAjax1.generateRequest();
 		console.log(this.jsonObj);
+
+		this.$.jsonRespAjax2.url = "https://px-data-grid-dummy-backend.herokuapp.com/contacts";
+	//	this.$.jsonRespAjax2.url = "https://dev-jupyterhub.power.ge.com/convert?angle=360";	 
+		this.$.jsonRespAjax2.generateRequest();
 	},	
       
-      ready: function () {
-        var that = this;
-		this.jsonObj = {};
-		this.$.jsonRespAjax1.addEventListener('response', function (evt) {
-          this.jsonResp = JSON.parse(JSON.stringify(evt.detail.response));		  
-        }.bind(this));
-		//this.resp = JSON.stringify(this.resp);
-		
-		  // Format for CSV
-		  /* var csvContent = "data:text/csv;charset=utf-8,";
-		  poly.exportData.forEach(function(row, index){
-			dataString = row.join(",");
-			csvContent += index < poly.exportData.length ? dataString+ "\n" : dataString;
-		  });
-		  var encodedUri = encodeURI(csvContent);
-		  // Download CSV
-		  sender.setAttribute("href", encodedUri);
-		  sender.setAttribute("download", poly.filename+poly.exportTime+".csv");
-		  sender.click(); */
+		ready: function () {
+			var that = this;
+			this.jsonObj = {};
+			this.$.jsonRespAjax1.addEventListener('response', function (evt) {
+				this.jsonResp = JSON.parse(JSON.stringify(evt.detail.response));	
+				this.jsonResp	= JSON.stringify(this.jsonResp);
+				console.log('json respnse', this.jsonResp);	  
+				this.resp = JSON.stringify(this.resp); 
+			}.bind(this));
+			
+			
+				// Format for CSV
+				/* var csvContent = "data:text/csv;charset=utf-8,";
+				poly.exportData.forEach(function(row, index){
+				dataString = row.join(",");
+				csvContent += index < poly.exportData.length ? dataString+ "\n" : dataString;
+				});
+				var encodedUri = encodeURI(csvContent);
+				// Download CSV
+				sender.setAttribute("href", encodedUri);
+				sender.setAttribute("download", poly.filename+poly.exportTime+".csv");
+				sender.click(); */
 
-      }
+
+
+			this.$.jsonRespAjax2.addEventListener('response', function (evt) {
+						this.jsonResp2 = JSON.parse(JSON.stringify(evt.detail.response));	
+						this.jsonResp2	= JSON.stringify(this.jsonResp2);
+						console.log('json respnse contacts list', this.jsonResp2);	 
+			}.bind(this));			
+	 }
+			
 	  
-    });
+});
+		
+		
   </script>
 </dom-module>

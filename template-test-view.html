@@ -1,0 +1,265 @@
+
+<!-- over ride the app's dark theme, and use the light theme here. -->
+<link rel="import" href="../../bower_components/px-theme/px-theme-styles.html">
+
+<dom-module id="template-test-view">
+    <template>
+        <style>
+        </style>
+        <px-branding-bar application-title="APM Predix Design System"></px-branding-bar>
+        <div class="slider-container u-mt-">
+                <input  type="text"
+                        
+                        value="{{ minmaxInput }}"
+                      
+                        on-change="_fireListenerMethod"
+                        
+                        />
+        </div>
+       
+    </pae-context-browser>
+      <event-fire user-data="{{userTableData}}"></event-fire>
+ <!-- <event-fire></event-fire>-->
+        <px-breadcrumbs items="{{breadCrumbsList}}" selected-route="{{selectedRoute}}">
+    </px-breadcrumbs>
+         <px-alert-message
+            visible type="information" action="dismiss" message-title="Well done!"
+            message="You successfully completed a difficult task." auto-dismiss="5000">
+        </px-alert-message>
+        
+        <iron-signals 
+        on-iron-signal-open-delete-card-modal="_openDeleteCardModal"
+        on-iron-signal-chart-zoomed="_onChartZoomed">
+        </iron-signals>
+        <px-card>
+            <px-dropdown id="dropdown1" items='[[ groupByItems ]]' 
+                select-by="key"
+                button-style="tertiary" 
+                display-value="Select" 
+                disable-dynamic-align
+                vertical-align='top'
+                horizontal-align='right'
+                trigger-height="30">
+            </px-dropdown>
+                <div>
+                    <px-tabs selected="{{selected}}">
+                        <px-tab id="tab1">Tab 1</px-tab>
+                        <px-tab id="tab2">Tab 2</px-tab>
+                        <px-tab id="tab3">Tab 3</px-tab>
+                    </px-tabs>
+                    <iron-pages selected="{{selected}}">
+                        <div id="tab1-content">
+                            <p>
+                                If we pass headers Access to XMLHttpRequest at 'https://dev-jupyterhub.power.ge.com/convert?angle=360' from origin 'https://dev-teds-ui.power.ge.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+                                No headers passing Access to XMLHttpRequest at 'https://dev-jupyterhub.power.ge.com/convert?angle=360' from origin 'https://dev-teds-ui.power.ge.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+                                This is coming when I add link in node jsAccess control origin is passing
+                                Error occured while trying to proxy to: 10.228.146.107:4200/convert?angle=360
+                            </p>
+                        </div>
+                        <div id="tab2-content">Tab 2 content
+                            <button class="btn btn--small" on-tap="_readSmallButton">Small</button>
+                            <button class="btn btn--large" on-click="_readLargeButton">Large</button>
+                            <button class="btn btn--huge">Huge</button>
+                            <button class="btn btn--full">Full</button>
+                            <div id="myEventId" on-click="myEventid(event)">myEventId</div>
+                            <!-- Types of Buttons: -->
+                            <button class="btn btn--primary">Primary</button>
+                            <button class="btn btn--call-to-action">Call To Action</button>
+                            <button class="btn btn--call-to-action btn--disabled">Call To Action (disabled)</button>
+                            <button class="btn btn--tertiary">Tertiary</button>
+                            <button class="btn btn--disabled">Disabled</button>
+                            <button class="btn btn--bare">Bare</button>
+                            <button class="btn btn--bare--primary">Bare Primary</button>
+
+
+                            <!-- Iconic Buttons: -->
+                            <button class="btn btn--icon">Icon</button>
+                        </div>
+                        <div id="tab3-content">Tab 3 content</div>
+                    </iron-pages>
+
+                </div>
+            </px-card>
+        <px-card header-text="Template Details" icon="px-nav:hierarchy">
+            <div>
+                <h1>Template View Page</h3>
+            </div>
+
+            
+            <px-accordion-group> 
+                <px-accordion icons='{"more":"px-utl:chevron-right","less":"px-utl:chevron","action":[{"icon":"px-utl:edit"},{"icon":"px-utl:delete"}]}' header-value="Header Caption" status="Last Updated: 3 Days Ago">
+                    <div>Content Goes here 1234</div>
+                    <div>Content Goes here 1234</div>
+                    <div>Content Goes here 1234</div>
+                    <div>Content Goes here 1234</div>
+
+
+
+                   <px-dropdown id='groupByDropDown1'
+								 items='[[ groupByItems2 ]]'
+								 button-style='tertiary'
+								 select-by='key'
+								 selected="{{ groupBySelectedItem }}"
+								 trigger-height='30'
+								 disable-dynamic-align
+								 vertical-align='top'
+								 horizontal-align='right'
+								 disabled$='[[_needMoreTags(chart.*)]]'></px-dropdown>
+                </px-accordion>
+
+                <px-accordion icons='{"more":"px-utl:chevron-right","less":"px-utl:chevron","action":[{"icon":"px-utl:edit"},{"icon":"px-utl:delete"}]}' 
+                        header-value="Header Caption 1" status="Last Updated: 3 Days Ago">
+                        <div>Content Goes here 1234</div>
+                        <div>Content Goes here 1234</div>
+                        <div>Content Goes here 1234</div>
+                        <div>Content Goes here 1234</div>
+                    </px-accordion>
+                
+            </px-accordion-group>
+           
+        </px-card>
+        <iron-ajax id="userTableList" url="https://px-data-grid-dummy-backend.herokuapp.com/contacts" ></iron-ajax>
+        <div>userTable Data : {{userTableData.length}}</div>
+        <div>show pagination [[!showPagination]]</div>
+        <px-card>
+                <template is="dom-if" if="true" >
+                        <px-data-table id="sensorTableClone"  table-data="{{userTableData}}">
+                                    
+                                <px-data-table-column name="index" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="name" label="Name"></px-data-table-column>
+                                <px-data-table-column name="address" label="Adress"></px-data-table-column>
+                                <px-data-table-column name="boolean" label="Valid"></px-data-table-column>
+                                <px-data-table-column name="city" label="City"></px-data-table-column>
+                                <px-data-table-column name="color" label="Color"></px-data-table-column>
+                                <px-data-table-column name="country" label="Country"></px-data-table-column>
+                             <!--   <px-data-table-column name="date" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="email" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="first" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="guid" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="image" label="Sl No" type="html"></px-data-table-column>
+                                <px-data-table-column name="integer" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="last" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="phone" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="state" label="Sl No"></px-data-table-column>
+                                <px-data-table-column name="zip" label="Sl No"></px-data-table-column>-->
+                                
+                            </px-data-table>
+                        
+                    </template>
+                               
+        </px-card>
+
+           
+        
+    </template>
+    <script>
+        Polymer({
+            is: "template-test-view",
+            properties: {
+                breadCrumbsList:{
+                    type: Object,
+                    notify: true
+                },
+              /* userTableData: {
+                    type:Object,
+                    observer: '_userDataForTable'
+                },*/
+                headerText: {
+                    type: String
+                },
+                showPagination: {
+                    type: Boolean,
+                    value: false
+                },
+                selected: {
+                    type: Number,
+                    value: 0
+                },
+                selectedRoute : {
+                    type: Array,
+                    value: function() {
+                        return ["North America","United States of America","California","San Ramon","Crow Canyon Gardens"];
+                    }
+                },
+                groupByItems: {
+					type: Array,
+					value: function () {
+						return [{"key":"1","val":"iPhone"},{"key":"2","val":"Android"},{"key":"3","val":"Blackberry"},
+                    {"key":"4","val":"Windows Phone"},{"key":"5","val":"Flip Phone","disabled":true}];
+					}
+                },
+                groupByItems2: {
+					type: Array,
+					value: function () {
+						return [{"key":"1","val":"laxman"},{"key":"2","val":"raj"},{"key":"3","val":"viboothi"},
+                    {"key":"4","val":"Marthin Phone"},{"key":"5","val":"King Phone","disabled":true}];
+					}
+				}
+            },
+            listeners: {
+                //'selection-changed': '_paeDropDownSelected'
+               // 'dropdown-selected': '_paeDropDownSelected'
+               'px-dropdown-selection-changed': '_paeDropDownSelected'
+             // "display-value-changed": "_paeDropDownSelected"
+            },
+            attached: function() {
+               
+            },
+            _chartZoomedEvent: function () {
+                this.fire('iron-signal', { name: 'chart-zoomed', data: { card: 'openchartzoomed' } });
+            },
+            ready: function () {
+               //this.$.userTableList.url = "https://px-data-grid-dummy-backend.herokuapp.com/contacts";
+                this.$.userTableList.generateRequest();
+
+                this.breadCrumbsList = [{"label":"North America","id":"North America","children":[{"label":"United States of America","id":"United States of America",
+                    "isSelectable":true,"children":[{"label":"California","id":"California","children":[{"label":"Alameda","id":"Alameda"},{"label":"Albany","id":"Albany"},{"label":"Alhambra","id":"Alhambra"},{"label":"Brentwood","id":"Brentwood"},{"label":"Burlingame","id":"Burlingame"},{"label":"Calistoga","id":"Calistoga"},{"label":"Concord","id":"Concord"},{"label":"Danville","id":"Danville"},{"label":"Emeryville","id":"Emeryville"},{"label":"Fresno","id":"Fresno"},{"label":"Gilroy","id":"Gilroy"},{"label":"Hayward","id":"Hayward"},{"label":"Oakland","id":"Oakland"},{"label":"San Francisco","id":"San Francisco"},{"label":"San Ramon","id":"San Ramon","children":[{"label":"Crow Canyon Gardens","id":"Crow Canyon Gardens"},{"label":"Old Ranch Park","id":"Old Ranch Park"},{"label":"Valley View Park","id":"Valley View Park"}]}]},{"label":"Colorado","id":"Colorado","isSelectable":false},{"label":"Delaware","id":"Delaware"},
+                    {"label":"Florida","id":"Florida"}]}]},{"label":"South America","id":"South America"}];
+                this._fireListenerMethod();
+               this.$.userTableList.addEventListener('response', function(evt) {
+                    //  this.userTableData = [{"index":0,"name":"Liz Grimes","first":"Isabel","last":"Conrad","image":"https://s3.amazonaws.com/uifaces/faces/twitter/enda/73.jpg","boolean":true,"guid":"8ea90ed8-83e1-4a28-a371-e5c0e1d0e021","integer":28,"date":"Sun Aug 14 1994 03:27:03 GMT-0700 (PDT)","address":"3 Vista Place","city":"Longbranch","state":"North Carolina","zip":64470,"country":"Lesotho","email":"isabelconrad@scentric.com","phone":"(817) 426-2901","color":"rgb(76,120,108)"},{"index":1,"name":"Frazier Lara","first":"Jocelyn","last":"Wooten","image":"https://s3.amazonaws.com/uifaces/faces/twitter/guillogo/73.jpg","boolean":false,"guid":"7017f9b1-690e-4c9d-8eee-f63285ca5148","integer":10,"date":"Tue May 24 1988 14:10:20 GMT-0700 (PDT)","address":"2 Catherine Street","city":"Healy","state":"Connecticut","zip":41121,"country":"Mongolia","email":"jocelynwooten@scentric.com","phone":"(901) 441-2582","color":"rgb(134,91,60)"},{"index":2,"name":"Dora Griffith","first":"Valentine","last":"Meyer","image":"https://s3.amazonaws.com/uifaces/faces/twitter/iboldurev/73.jpg","boolean":true,"guid":"8c3bd9ad-e8d6-4ea4-85e6-d145295f3f91","integer":99,"date":"Sat Feb 17 1973 03:45:57 GMT-0800 (PST)","address":"4 Whitty Lane","city":"Nicholson","state":"South Carolina","zip":41343,"country":"Germany","email":"valentinemeyer@scentric.com","phone":"(956) 428-2996","color":"rgb(201,142,97)"}];
+                    this.userTableData = JSON.parse(JSON.stringify(evt.detail.response));	
+                    this.showPagination = this.userTableData.length > 10; 
+                    console.log(this.userTableData.length);
+                    console.log(this.userTableData);
+                this._userDataForTable();
+                    this.headerText = "Asset Performance";
+                }.bind(this));
+/* 
+                var _this = this;
+                //var dd1 = document.getElementById('dropdown1');
+                _this.$.dropdown1.addEventListener('px-dropdown-selection-changed', function (evt) {  
+                    console.log("Dropdown 1 changed to: " + JSON.stringify(evt.detail));
+                 _this.dd1SelectedData = evt.detail.val; }); 
+
+                 _this.$.groupByDropDown1.addEventListener('selected-changed', function (evt) {  
+                    console.log("groupByDropDown 1 changed to: " + JSON.stringify(evt.detail));
+                 _this.dd1SelectedData = evt.detail.val; }); 
+               */
+
+        },
+        _paeDropDownSelected: function (e) {
+            var selectedOptionId = e.detail;
+            console.log('selection changed', e.detail);
+        },
+        _readSmallButton : function() {
+            alert('youclicked small button');
+        },
+        _readLargeButton : function() {
+            alert('youclicked large button');
+        },
+        myEventid: function(e) {
+            alert('youclicked large button', e.detail);
+        },
+        _userDataForTable: function (userTableData) {
+            alert('_userDataForTable');
+            this._chartZoomedEvent();
+        },
+        _fireListenerMethod: function (ev) {
+            this.fire('change-minmax-input', { minmaxInput: ev, appName: 'viboothi' });
+        },
+       
+        
+    });
+    </script>
+</dom-module>

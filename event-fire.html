@@ -1,0 +1,67 @@
+
+<dom-module id="event-fire">
+<template>
+    <div><h1>THIS IS EVENT FIRE HTML PAGE</h1></div>
+    <style>
+    </style>
+    <div> 
+            <px-context-browser-trigger trigger={{openTrigger}}></px-context-browser-trigger>
+        <px-context-browser open-trigger="[[openTrigger]]"  items='{{contextBrowserList}}' 
+        selected-route='["assets","a1"]' collapse-at="450" loading-timeout="5000"></px-context-browser></div>
+     <iron-signals 
+     on-iron-signal-open-delete-card-modal="_openDeleteCardModal"
+     on-iron-signal-chart-zoomed="_onChartZoomed">
+     </iron-signals>
+</template>
+<script>
+    Polymer({
+        is: 'event-fire',
+        properties: {
+        userData: {
+          type: Object,
+          observer: '_observerEventFromTemplate'
+        },
+        contextBrowserList:{
+            type:Object,
+            value: function() {
+                return [{"label":"Home","id":"home"},{"label":"Alerts","id":"alerts","info":"This is a list of alerts",
+        "children":[{"label":"Alert #1","id":"al1","info":"Oh no! Your turbine has stopped spinning"},
+        {"label":"Alert #2","id":"al2","info":"Looks like something is not working"},
+        {"label":"Alert #3","id":"al3","info":"I am a helpful alert message"},
+        {"label":"Alert #4","id":"al4","info":"Danger: Something is not right."}]},
+        {"label":"Assets","id":"assets","children":[{"label":"Asset #1","id":"a1","info":"Here is some information about this asset"},
+        {"label":"Asset #2","id":"a2","info":"This is a different asset. Here is more information about this asset."}]}];
+            }
+        }
+        },
+        listeners: {
+            'change-minmax-input':'_listenerEventFired'
+        },
+        ready: function() {
+            console.log('ready method in ')
+        },
+        _onChartZoomed: function(event) {
+            console.log(event.detail);
+            alert(JSON.stringify(event.detail));
+        },
+        _openDeleteCardModal: function(event) {
+            console.log(event.detail)
+            alert(JSON.stringify(event.detail));
+        },
+        _observerEventFromTemplate: function (userData) {
+            this._newEventFired(this.userData);
+            console.log(this.userData)
+        },
+        _newEventFired : function(userData){
+            console.log('new Event Fired', userData);
+         //   alert(JSON.stringify(userData));
+        },
+        _listenerEventFired:function (event){
+            console.log(event)
+         //   alert('listener Event Fired');
+        },
+
+    });
+</script>
+</dom-module>
+
