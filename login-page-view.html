@@ -1,0 +1,154 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/px-card/px-card.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/px-dropdown/px-dropdown.html">
+<link rel="import" href="../../bower_components/px-icon-set/px-icon-set.html">
+<link rel="import" href="../../bower_components/px-alert-message/px-alert-message.html">
+<link rel="import" href="../../bower_components/px-theme/px-theme-styles.html">
+<link rel="import" href="../../bower_components/iron-signals/iron-signals.html"/>
+
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/px-app-helpers/px-app-route/px-app-route.html">
+
+
+<script src="../../bower_components/moment/min/moment.min.js"></script>
+
+<dom-module id="login-page-view">
+    <template>
+      <style include="login-page-view-styles">
+            #loginForm {
+                background-color: #fff;
+                padding: 80px 40px;
+                width: 25em;
+            }
+            h1 {
+                color: black;
+                font-size: 1.4em;
+                line-height: 1.2em;
+            }
+          #loginPage input#userName, #loginPage input#password {
+            color: #000;
+            font-style: italic;
+            border: 1px solid #c7d0d2;
+            border-radius: 2px;
+            display: block;
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            padding: 3px;
+        }
+
+        #loginPage input, button {
+            margin-bottom: 10px;
+            font-family: "GEInspiraM", Arial, sans-serif;
+            font-size: 18px;
+            max-width: 325px;
+        }
+        .login {
+            font-size: 1.1em;
+            white-space: normal;
+            width: 25em;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            padding: 2px 9px;
+            background-color: #0071b1;
+            border-radius: 3px;
+            border: 0;
+            position: relative;
+            margin-bottom: 0 !important;
+            margin-top: 12px;
+        }
+        #alertMessageId {
+          position: absolute;
+          top: 10px;
+          right: 20px;
+          z-index: 300;
+        }
+      </style>
+    <px-alert-message
+        id="alertMessageId"
+        type="important"
+        message-title=""
+        message="{{successMessage}}"
+        visible="{{isSuccess}}"
+        auto-dismiss="5000"
+        language="en"
+        disable-auto-show
+        hide-severity
+        hide-badge>
+   <px-icon icon="px-utl:information" style="color:white;"></px-icon>
+</px-alert-message>
+       <px-card id="userLoginForm" header-text="Login Application">
+        <div id="loginForm">
+            <h1>GE Single Sign On</h1>{{isSuccess}}
+            <div id="loginPage">
+                <div>USER NAME : <input type="text" id="userName" class="text-input" name="username" maxlength="20" value="{{loginForm.username::input}}"></div>
+                <div>PASSWORD :<input type="password" id="password" class="text-input" name="password" maxlength="20" value="{{loginForm.password::input}}"></div>
+                <div><button class="btn btn--large btn--call-to-action login" on-tap="_loginPage">Submit</button></div>
+
+            </div>
+        </div>
+       </px-card>
+      
+    </template>
+    <script>
+        Polymer({
+            is: "login-page-view",
+            properties:{
+                username: {
+                    type: String
+                },
+                password:{
+                    type:String
+                },
+                newCardName:{
+                    type:String
+                },
+                isSuccess : {
+                    type: Boolean,
+                    value:false
+                },
+                successMessage :{
+                    type:String
+                },
+                loginForm: {
+                    type: Object,
+                    value: function() {
+                        return {};
+                },
+                loginInfo:{
+                    type: Object
+                }
+			}
+            },
+            
+            ready: function () {
+                console.log('login page loads');
+              /*  document.querySelector('#alertMessageId').addEventListener('click', (e) => {
+					var alertID = e.detail;
+					console.log('alertID', alertID);
+				});*/
+            },
+            _loginPage : function() {
+               console.log(this.loginForm);
+              // this.isSuccess = false;
+               if (this.loginForm.username === 'admin' ||
+                        this.loginForm.password === 'admin') {
+                            this.isSuccess = true;
+                            this.successMessage = "Login is Successfull...";
+                           // this.loginInfo = {'isSuccess':this.isSuccess, 'successMessage': this.successMessage};
+                          //  this.fire('iron-signal', { name: 'pass-login-details', data: { loginInfo: this.loginInfo } });
+                            window.history.pushState({'isSuccess':this.isSuccess, 'successMessage': this.successMessage}, null, '#/flowdock');
+                            window.dispatchEvent(new CustomEvent('location-changed', { loginInfo: this.loginInfo }));
+                          
+
+               } else {
+                   this.isSuccess = true;
+                   this.successMessage = 'Login Failed. Incorrect Username or Passowrd....!'
+               }
+               
+            }
+        });
+    </script>
+    </dom-module>
